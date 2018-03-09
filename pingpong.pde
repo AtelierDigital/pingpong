@@ -1,10 +1,11 @@
 
+boolean saqueAlternado = false;
+int maxPontos = 5;
+
 int pontosA, pontosB;
 int vitoriasA, vitoriasB;
 
 int jogadorSelecionado = 1;
-
-boolean saqueAlternado = false;
 boolean vaiA2 = false;
 boolean jogoFinalizado = false;
 
@@ -37,42 +38,43 @@ void draw(){
  
   invert = invert%2;
   
-  background(cor,80,80);
-  
-  
+  if(jogoFinalizado)  background(0,80,80);
+  else if(vaiA2)                background(60,80,80);
+  else                     background(120,80,80);
   
   
   fill(0);
-  
-  text(jogadorSelecionado, width/2.0, height-20);
   textSize(160);
   text(pontosA, width/4.0, height/2.0);  
   
   rect(width/2.0 - 10, height/3.0, 20, height/3.0);
   text(pontosB, width -width/4.0, height/2.0);
   
-  
-  
-  if(pontosA == 20 && pontosB == 20) vaiA2 = true;
+  if(pontosA == maxPontos-1 && pontosB == maxPontos-1) vaiA2 = true;
   
 
   //verificar vencedor
-  if(((pontosA == 21 || pontosB == 21) && !vaiA2) || ((pontosA > pontosB+1 || pontosB > pontosA+1) && vaiA2)){
+  if(((pontosA == maxPontos || pontosB == maxPontos) && !vaiA2) || ((pontosA > pontosB+1 || pontosB > pontosA+1) && vaiA2)){
 
     if(pontosA>pontosB) {
       
-      vitoriasA++;
-      vitoriasB = 0;
+      if(!jogoFinalizado)vitoriasA++;
+      
+      fill(360);
+      textSize(40);
+      text("VENCEDOR", width/4.0, height-height/2.4);
       
     }else{
       
-      vitoriasA++;
-      vitoriasB = 0;
+      if(!jogoFinalizado)vitoriasB++;
+      
+      fill(360);
+      textSize(40);
+      text("VENCEDOR", width-width/4.0, height-height/2.4);
+      
     }
     
     jogoFinalizado = true;
-    
-    text("FIM", width/2.0, height/2.0);  
   }
   
   
@@ -83,9 +85,11 @@ void draw(){
   fill(360);
   
   //mostrar saque
-  if(jogadorSelecionado==1) ellipse(width/4.0, height-height/2.4, 40, 40);
-  if(jogadorSelecionado==2) ellipse(width-width/4.0, height-height/2.4, 40, 40);
+  if(jogadorSelecionado==1 && !jogoFinalizado) ellipse(width/4.0, height-height/2.4, 40, 40);
+  if(jogadorSelecionado==2 && !jogoFinalizado) ellipse(width-width/4.0, height-height/2.4, 40, 40);
   
+  for(int i=0; i<vitoriasA; i++) rect(30+(i*60), 0, 30, 90);
+  for(int i=0; i<vitoriasB; i++) rect(width-30-(i*60)-30, 0, 30, 90);
   
   //LOGO
   image(logo,width/2.0-50, 30, 100, 100);
@@ -110,6 +114,18 @@ void keyPressed(){
     
   }
   
+  if(key=='3') {
+    
+      if(jogadorSelecionado==2) jogadorSelecionado = 1;
+      else jogadorSelecionado = 2;
+      
+  }
+  
+  if(key=='4') {
+      vitoriasA = 0;
+      vitoriasB = 0;
+  }
+  
   if(jogoFinalizado) return;
   
   if(key=='1') pontosA++;
@@ -125,12 +141,8 @@ void keyPressed(){
   }else{
     
     if((pontosA+pontosB)%5==0){
-     
       if(jogadorSelecionado==2) jogadorSelecionado = 1;
-      else jogadorSelecionado = 2;
-      
-    }
-    
+      else jogadorSelecionado = 2; 
+    } 
   }
-  
 }
